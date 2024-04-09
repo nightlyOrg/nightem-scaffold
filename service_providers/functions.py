@@ -42,26 +42,28 @@ async def run_tasks(directory_name, task_name, task_type):
         print(f'Running {task_name} {task_type}...')
 
         if task_type == "Seeder":
-            task_handler(task_data, database, task_type)
+            task_handler(task_data, database, task_type, cursor)
         elif task_type == "Schema":
-            task_handler(task_data, database, task_type)
+            task_handler(task_data, database, task_type, cursor)
 
         print(f'Finished running {task_name} {task_type}.')
 
     database.close()
     cursor.close()
 
-def task_handler(task_data, database, task_type):
+
+def task_handler(task_data, database, task_type, cursor):
     """
     Runs the appropriate task based on the task type (Seeder or Schema)
     """
     if task_type == "Seeder":
         query_string = seed_query_builder(task_data["name"], task_data["data"])
         database.execute(query_string[0], query_string[1])
-        database.commit()
+        cursor.commit()
     elif task_type == "Schema":
         query_string = migration_query_builder(task_data["name"], task_data["data"])
         database.execute(query_string)
+
 
 def seed_query_builder(table_name, columns_list):
     """
@@ -76,6 +78,7 @@ def seed_query_builder(table_name, columns_list):
 
     return query_string, tuple(values_list)
 
+
 def migration_query_builder(table_name, columns):
     """
     Builds a query string for creating a table
@@ -87,11 +90,13 @@ def migration_query_builder(table_name, columns):
     query += ")"
     return query
 
+
 async def run_seeders():
     """
     Runs the seeder tasks
     """
     await run_tasks("seeders", "Seeder", "Seeder")
+
 
 async def run_migrations():
     """
