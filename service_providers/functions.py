@@ -35,8 +35,8 @@ async def run_tasks(directory_name, task_name, task_type):
         task_instance = TaskClass()
 
         task_data = {
-            "name": task_instance.getName(),
-            "data": task_instance.getData(),
+            "name": task_instance.getTable() if task_type == "Seeder" else task_instance.getName(),
+            "data": task_instance.getColumns()
         }
 
         print(f'Running {task_name} {task_type}...')
