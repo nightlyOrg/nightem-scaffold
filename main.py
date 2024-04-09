@@ -6,7 +6,7 @@ from service_providers.seeding_provider import run_seeders
 
 from config.vault import token
 from config.app import Settings
-from utilities.database import mysql_login, selector, modifyData
+from database.executioners.database import mysql_login, selector, modifyData
 from datetime import datetime
 
 is_seeding_enabled = Settings().get_setting("seeding")
